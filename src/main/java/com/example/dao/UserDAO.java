@@ -86,40 +86,39 @@ public class UserDAO {
                      "LEFT JOIN customers c ON a.ID = c.Account_ID " +
                      "WHERE a.Username = ? AND a.Password = ?";
         
-        try (Connection conn = DBConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
-            
+        // Hapus try-with-resources di baris ini, ganti dengan try-catch biasa untuk debug
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rs = null;
+
+        try {
+            conn = DBConnection.getConnection(); // Ini sekarang akan lempar error jika gagal
+            stmt = conn.prepareStatement(sql);
             stmt.setString(1, username);
             stmt.setString(2, password);
             
-            ResultSet rs = stmt.executeQuery();
-            
+            rs = stmt.executeQuery();
+
             if (rs.next()) {
-                // Buat object User dari hasil query
-                User user = new User(
-                    rs.getString("Username"),
-                    rs.getString("Name"),
-                    rs.getString("Phone_Number"),
-                    rs.getString("Gender"),
-                    rs.getString("Birth_Date"),
-                    rs.getString("Type")
-                );
-
-                user.setAccountID(rs.getString("accountID"));
-                user.setCustomerID(rs.getString("customerID"));
-                user.setMembershipID(rs.getString("Membership_ID"));
-
-                rs.close();
+                // ... (Logika mapping user sama seperti sebelumnya) ...
+                User user = new User( ... );
+                // ... set ID dll ...
                 return user;
             }
-            
-            rs.close();
-            return null; // Login gagal
-            
-        } catch (SQLException e) {
-            System.err.println("Error logging in: " + e.getMessage());
-            e.printStackTrace();
             return null;
+
+        } catch (SQLException e) {
+            // Print error lengkap ke console server
+            e.printStackTrace(); 
+            // Opsional: Lempar RuntimeException biar muncul di layar Browser (Error 500 tapi jelas)
+            throw new RuntimeException("Database Error: " + e.getMessage(), e);
+        } finally {
+            // Tutup manual
+            try { if(rs != null) rs.close(); } catch(Exception e){}
+            try { if(stmt != null) stmt.close(); } catch(Exception e){}
+            // Jangan tutup koneksi kalau pakai Singleton sederhana, atau tutup jika perlu.
+            // Untuk keamanan connection pool sederhana:
+            // try { if(conn != null) conn.close(); } catch(Exception e){} 
         }
     }
     
