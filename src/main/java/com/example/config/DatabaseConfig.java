@@ -12,9 +12,9 @@ public class DatabaseConfig {
     
     // JDBC URL
     private static final String DB_URL = "jdbc:postgresql://" + DB_HOST + ":" + DB_PORT + "/" + DB_NAME 
-        + "?sslmode=require"
-        + "&ssl=true"
-        + "&sslfactory=org.postgresql.ssl.NonValidatingFactory";
+            + "?sslmode=verify-full"
+            + "&ssl=true"
+            + "&sslfactory=org.postgresql.ssl.DefaultSSLFactory";
 
     // Getter methods
     public static String getDbUrl() {
