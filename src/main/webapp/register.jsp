@@ -27,13 +27,9 @@
                     <label for="full-name" data-key="register_full_name">Full Name</label>
                     <input type="text" id="full-name" name="fullName" required>
                 </div>
-                <div class="form-group">
-                    <label for="email" data-key="register_email">Email Address</label>
-                    <input type="email" id="email" name="email" required>
-                </div>
                  <div class="form-group">
                     <label for="phone" data-key="register_phone">Phone Number</label>
-                    <input type="tel" id="phone" name="phone">
+                    <input type="tel" id="phone" name="phone" required>
                 </div>
                 <div class="form-row">
                     <div class="form-group">
@@ -42,12 +38,11 @@
                             <option value="" data-key="register_gender_select">Select...</option>
                             <option value="male" data-key="register_gender_male">Male</option>
                             <option value="female" data-key="register_gender_female">Female</option>
-                            <option value="other" data-key="register_gender_other">Rather not say</option>
-                        </select>
+                        </select required>
                     </div>
                     <div class="form-group">
                         <label for="birthdate" data-key="register_birthdate">Birthdate</label>
-                        <input type="date" id="birthdate" name="birthdate">
+                        <input type="date" id="birthdate" name="birthdate" required>
                     </div>
                 </div>
                 <input type="hidden" name="accountType" value="customer">

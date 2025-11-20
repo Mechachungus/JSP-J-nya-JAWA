@@ -40,7 +40,7 @@
 
                 <div class="membership-card">
                     <h3 data-key="membership_vvip_name">VVIP</h3>
-                    <div class="membership-price">Rp1.200.000</div> 
+                    <div class="membership-price">Rp9.000.000</div> 
                     <div class="membership-discount" data-key="membership_vvip_discount">50% Discount</div>
                     <p data-key="membership_vvip_desc">For you, our family. You will get access to a special discount of 50% for every transaction. You can have free meal course twice a week. You will also get a special present for your birthday.</p>
                     <a href="#" class="btn btn-book" data-key="join_now">Join Now</a>

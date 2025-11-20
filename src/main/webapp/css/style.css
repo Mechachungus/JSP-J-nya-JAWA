@@ -658,7 +658,6 @@ body.dark-mode .room-type-details p {
     color: var(--text-light-gray);
 }
 .booking-form input[type="text"],
-.booking-form input[type="email"],
 .booking-form input[type="tel"],
 .booking-form input[type="date"] {
     width: 100%;
@@ -725,7 +724,6 @@ body.dark-mode .booking-form label {
     color: #ccc;
 }
 body.dark-mode .booking-form input[type="text"],
-body.dark-mode .booking-form input[type="email"],
 body.dark-mode .booking-form input[type="tel"],
 body.dark-mode .booking-form input[type="date"] {
     background: #333;
@@ -1088,7 +1086,6 @@ body.dark-mode .lang-selector:hover {
     color: var(--text-light-gray);
 }
 .auth-panel input[type="text"],
-.auth-panel input[type="email"],
 .auth-panel input[type="tel"],
 .auth-panel input[type="password"] {
     width: 100%;
@@ -1109,7 +1106,6 @@ body.dark-mode .auth-panel label {
     color: #ccc;
 }
 body.dark-mode .auth-panel input[type="text"],
-body.dark-mode .auth-panel input[type="email"],
 body.dark-mode .auth-panel input[type="tel"],
 body.dark-mode .auth-panel input[type="password"] {
     background: #333;

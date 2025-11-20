@@ -33,10 +33,6 @@
                                 <input type="text" id="full-name" name="full-name" value="${sessionScope.user.fullName}" required>
                             </div>
                             <div class="form-group">
-                                <label for="email" data-key="booking_email">Email Address</label>
-                                <input type="email" id="email" name="email" value="${sessionScope.user.email}" required>
-                            </div>
-                            <div class="form-group">
                                 <label for="phone" data-key="booking_phone">Phone Number</label>
                                 <input type="tel" id="phone" name="phone" value="${sessionScope.user.phoneNumber}">
                             </div>
@@ -106,9 +102,9 @@
     document.addEventListener('DOMContentLoaded', function() {
         // 1. Define Room Data & Select Elements
         const roomData = {
-            'deluxe': { name: 'Deluxe Room', price: 2500000 },
-            'executive': { name: 'Executive Suite', price: 4000000 },
-            'luxury': { name: 'Luxury Villa', price: 7000000 }
+            'deluxe': { name: 'Deluxe Room', price: 1500000 },
+            'executive': { name: 'Executive Suite', price: 2500000 },
+            'luxury': { name: 'Luxury Villa', price: 4000000 }
         };
         
         const roomSelect = document.getElementById('room-type-select');
