@@ -81,18 +81,17 @@ public class UserDAO {
     // Fungsi untuk LOGIN - Validasi username dan password
     public User loginUser(String username, String password) {
         String sql = "SELECT a.ID as accountID, a.Username, a.Type, " +
-                     "c.ID as customerID, c.Name, c.Gender, c.Birth_Date, c.Phone_Number, c.Membership_ID " +
-                     "FROM account a " +
-                     "LEFT JOIN customers c ON a.ID = c.Account_ID " +
-                     "WHERE a.Username = ? AND a.Password = ?";
+                    "c.ID as customerID, c.Name, c.Gender, c.Birth_Date, c.Phone_Number, c.Membership_ID " +
+                    "FROM account a " +
+                    "LEFT JOIN customers c ON a.ID = c.Account_ID " +
+                    "WHERE a.Username = ? AND a.Password = ?";
         
-        // Hapus try-with-resources di baris ini, ganti dengan try-catch biasa untuk debug
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rs = null;
 
         try {
-            conn = DBConnection.getConnection(); // Ini sekarang akan lempar error jika gagal
+            conn = DBConnection.getConnection();
             stmt = conn.prepareStatement(sql);
             stmt.setString(1, username);
             stmt.setString(2, password);
@@ -100,28 +99,40 @@ public class UserDAO {
             rs = stmt.executeQuery();
 
             if (rs.next()) {
-                // ... (Logika mapping user sama seperti sebelumnya) ...
-                User user = new User( ... );
-                // ... set ID dll ...
+                // Mapping result set ke object User
+                User user = new User(
+                    rs.getString("customerID"),
+                    rs.getString("accountID"), 
+                    rs.getString("Username"),
+                    rs.getString("Name"),
+                    rs.getString("Phone_Number"),
+                    rs.getString("Gender"),
+                    rs.getString("Birth_Date"),
+                    rs.getString("Type"),
+                    rs.getString("Membership_ID")
+                );
                 return user;
             }
             return null;
 
         } catch (SQLException e) {
-            // Print error lengkap ke console server
-            e.printStackTrace(); 
-            // Opsional: Lempar RuntimeException biar muncul di layar Browser (Error 500 tapi jelas)
+            e.printStackTrace();
             throw new RuntimeException("Database Error: " + e.getMessage(), e);
         } finally {
-            // Tutup manual
-            try { if(rs != null) rs.close(); } catch(Exception e){}
-            try { if(stmt != null) stmt.close(); } catch(Exception e){}
-            // Jangan tutup koneksi kalau pakai Singleton sederhana, atau tutup jika perlu.
-            // Untuk keamanan connection pool sederhana:
-            // try { if(conn != null) conn.close(); } catch(Exception e){} 
+            // Close resources
+            try { 
+                if (rs != null) rs.close(); 
+            } catch (SQLException e) { 
+                e.printStackTrace(); 
+            }
+            try { 
+                if (stmt != null) stmt.close(); 
+            } catch (SQLException e) { 
+                e.printStackTrace(); 
+            }
         }
     }
-    
+        
     // Fungsi untuk CEK username sudah ada atau belum
     public boolean isUsernameExists(String username) {
         String sql = "SELECT COUNT(*) FROM account WHERE Username = ?";
