@@ -9,4 +9,8 @@ FROM tomcat:10.1-jdk17-temurin
 RUN rm -rf /usr/local/tomcat/webapps/ROOT
 COPY --from=build /app/target/app.war /usr/local/tomcat/webapps/ROOT.war
 EXPOSE 8080
+
+# CRITICAL CHANGE: We don't need to change much here, 
+# but let's make sure catalina run is executed cleanly.
+# Render automatically injects ENV vars into the container at runtime.
 CMD ["catalina.sh", "run"]
