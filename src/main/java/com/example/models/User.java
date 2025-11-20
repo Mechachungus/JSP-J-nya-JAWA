@@ -11,6 +11,11 @@ public class User {
     private String accountType;
     private String membershipID; // Tambahan baru
 
+    // --- ADDED THIS CONSTRUCTOR TO FIX THE ERROR ---
+    public User() {
+    }
+    // -----------------------------------------------
+
     public User(String customerID, String accountID, String username, String fullName, 
                 String phoneNumber, String gender, String birthDate, 
                 String accountType, String membershipID) {

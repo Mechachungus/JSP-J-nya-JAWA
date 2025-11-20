@@ -11,7 +11,7 @@ public class UserDAO {
         Connection conn = null;
         PreparedStatement stmtAccount = null;
         PreparedStatement stmtCustomer = null;
-        boolean success = false; // Gunakan flag sukses
+        boolean success = false; // Flag untuk status keberhasilan
 
         try {
             conn = DBConnection.getConnection();
@@ -54,20 +54,20 @@ public class UserDAO {
             }
 
         } catch (SQLException e) {
-            // 💡 Perbaikan: Lakukan rollback hanya jika 'conn' tidak null.
+            // PERBAIKAN: Cek conn != null sebelum rollback
             if (conn != null) {
                 try {
                     System.err.println("Transaction error. Initiating rollback...");
-                    conn.rollback(); // Rollback transaksi saat terjadi exception
+                    conn.rollback(); 
                 } catch (SQLException ex) {
                     ex.printStackTrace();
                 }
             }
             System.err.println("Error saat mendaftar pengguna: " + e.getMessage());
             e.printStackTrace();
-            // success tetap false (default)
+            success = false;
         } finally {
-            // 💡 Perbaikan: Pastikan semua objek dicek null sebelum close()
+            // PERBAIKAN: Cek objek != null sebelum close()
             try {
                 if (stmtCustomer != null) {
                     stmtCustomer.close();
@@ -76,8 +76,8 @@ public class UserDAO {
                     stmtAccount.close();
                 }
                 if (conn != null) {
-                    // Reset auto-commit ke true (praktik terbaik)
-                    conn.setAutoCommit(true);
+                    // Reset auto-commit ke true sebelum menutup koneksi
+                    conn.setAutoCommit(true); 
                     conn.close();
                 }
             } catch (SQLException e) {
