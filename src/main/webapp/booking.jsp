@@ -14,10 +14,11 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/litepicker/dist/css/litepicker.css"/>
     <script src="https://cdn.jsdelivr.net/npm/litepicker/dist/litepicker.js"></script>
 </head>
-<body class="page-no-scroll">
-
     <jsp:include page="header.jsp" />
 
+    <div id="the-sun"></div>
+    <div id="the-moon"></div>
+    
     <main class="page-content">
         <section class="content-grid-section">
             <div class="container">

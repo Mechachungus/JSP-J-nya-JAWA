@@ -10,7 +10,6 @@
     <link rel="icon" type="image/png" href="${pageContext.request.contextPath}/images/logo.png">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
-
     <jsp:include page="header.jsp" />
 
     <div id="the-sun"></div>
