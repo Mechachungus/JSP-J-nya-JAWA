@@ -11,7 +11,9 @@ public class DatabaseConfig {
     private static final String DRIVER_CLASS_NAME = "org.postgresql.Driver";
     
     // JDBC URL
-    private static final String DB_URL = "jdbc:postgresql://" + DB_HOST + ":" + DB_PORT + "/" + DB_NAME;
+    private static final String DB_URL = "jdbc:postgresql://" + DB_HOST + ":" + DB_PORT + "/" + DB_NAME 
+            + "?user=" + DB_USER + "&password=" + DB_PASSWORD
+            + "&sslmode=require";
 
     // Getter methods
     public static String getDbUrl() {
