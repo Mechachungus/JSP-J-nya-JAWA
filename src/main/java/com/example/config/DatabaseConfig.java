@@ -1,40 +1,46 @@
 package com.example.config;
 
 public class DatabaseConfig {
+    // Database credentials dari freesqldatabase.com
+    private static final String DB_HOST = "db.joepctttmwjxojncyepf.supabase.co";
+    private static final String DB_PORT = "5432";
+    private static final String DB_NAME = "postgres";
+    private static final String DB_USER = "postgres";
+    private static final String DB_PASSWORD = "STEVENFEKFRENBGT";
 
-    // 1. CRITICAL: This method was missing! 
-    // Your DBConnection.java needs this to load the PostgreSQL driver.
-    public static String getDriverClassName() {
-        return "org.postgresql.Driver";
-    }
+    private static final String DRIVER_CLASS_NAME = "org.postgresql.Driver";
+    
+    // JDBC URL
+    private static final String DB_URL = "jdbc:postgresql://" + DB_HOST + ":" + DB_PORT + "/" + DB_NAME 
+        + "?sslmode=require"
+        + "&ssl=true"
+        + "&sslfactory=org.postgresql.ssl.NonValidatingFactory";
 
-    // 2. Get URL
+    // Getter methods
     public static String getDbUrl() {
-        String url = System.getenv("DB_URL");
-        if (url == null || url.isEmpty()) {
-            // Fallback: Use the hardcoded Supabase URL for local testing
-            return "jdbc:postgresql://db.joepctttmwjxojncyepf.supabase.co:5432/postgres?sslmode=require";
-        }
-        return url;
+        return DB_URL;
     }
-
-    // 3. Get User
+    
     public static String getDbUser() {
-        String user = System.getenv("DB_USER");
-        if (user == null || user.isEmpty()) {
-            // Fallback: Use the hardcoded user
-            return "postgres"; 
-        }
-        return user;
+        return DB_USER;
     }
-
-    // 4. Get Password
+    
     public static String getDbPassword() {
-        String password = System.getenv("DB_PASSWORD");
-        if (password == null || password.isEmpty()) {
-            // Fallback: Use the hardcoded password you shared
-            return "STEVENFEKFRENBGT"; 
-        }
-        return password;
+        return DB_PASSWORD;
+    }
+    
+    public static String getDbHost() { 
+        return DB_HOST; 
+    }
+    public static String getDbPort() { 
+        return DB_PORT; 
+    }
+    public static String getDbName() { 
+        return DB_NAME; 
+    }
+    
+    // Driver class name
+    public static String getDriverClassName() {
+        return DRIVER_CLASS_NAME;
     }
 }
