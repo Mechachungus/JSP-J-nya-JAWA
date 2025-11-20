@@ -11,15 +11,16 @@ public class UserDAO {
         Connection conn = null;
         PreparedStatement stmtAccount = null;
         PreparedStatement stmtCustomer = null;
-        
+        boolean success = false; // Gunakan flag sukses
+
         try {
             conn = DBConnection.getConnection();
-            conn.setAutoCommit(false); // Start transaction
-            
+            conn.setAutoCommit(false); // Mulai transaksi
+
             // 1. Generate ID untuk Account dan Customer
             String accountID = generateAccountID(conn);
             String customerID = generateCustomerID(conn);
-            
+
             // 2. Insert ke table ACCOUNT
             String sqlAccount = "INSERT INTO account (ID, Username, Password, Type) VALUES (?, ?, ?, ?)";
             stmtAccount = conn.prepareStatement(sqlAccount);
@@ -27,9 +28,9 @@ public class UserDAO {
             stmtAccount.setString(2, user.getUsername());
             stmtAccount.setString(3, password);
             stmtAccount.setString(4, "Customer"); // Default type Customer
-            
+
             int rowsAccount = stmtAccount.executeUpdate();
-            
+
             // 3. Insert ke table CUSTOMERS
             String sqlCustomer = "INSERT INTO customers (ID, Name, Gender, Birth_Date, Phone_Number, Account_ID, Membership_ID) VALUES (?, ?, ?, ?, ?, ?, ?)";
             stmtCustomer = conn.prepareStatement(sqlCustomer);
@@ -38,35 +39,35 @@ public class UserDAO {
             stmtCustomer.setString(3, user.getGender());
             stmtCustomer.setString(4, user.getBirthDate());
             stmtCustomer.setString(5, user.getPhoneNumber());
-            stmtCustomer.setString(6, accountID);
-            stmtCustomer.setString(7, "M1"); // Default membership Basic
-            
+            stmtCustomer.setString(6, accountID); // Foreign Key ke table Account
+            stmtCustomer.setString(7, "MEM001"); // Default Membership ID
+
             int rowsCustomer = stmtCustomer.executeUpdate();
-            
-            // 4. Commit transaction jika semua berhasil
+
+            // 4. Cek apakah kedua operasi berhasil
             if (rowsAccount > 0 && rowsCustomer > 0) {
-                conn.commit();
-                return true;
+                conn.commit(); // Commit transaksi jika kedua insert berhasil
+                success = true;
             } else {
-                conn.rollback();
-                return false;
+                conn.rollback(); // Rollback jika ada yang gagal
+                System.err.println("Gagal commit. Melakukan rollback.");
             }
-            
+
         } catch (SQLException e) {
-            // Perlu diperhatikan: Saat terjadi SQLException, disarankan untuk melakukan rollback
-            // sebelum mencetak stack trace.
+            // 💡 Perbaikan: Lakukan rollback hanya jika 'conn' tidak null.
             if (conn != null) {
                 try {
-                    System.err.println("Transaction is being rolled back...");
-                    conn.rollback(); // Lakukan rollback
+                    System.err.println("Transaction error. Initiating rollback...");
+                    conn.rollback(); // Rollback transaksi saat terjadi exception
                 } catch (SQLException ex) {
                     ex.printStackTrace();
                 }
             }
+            System.err.println("Error saat mendaftar pengguna: " + e.getMessage());
             e.printStackTrace();
-            return false;
+            // success tetap false (default)
         } finally {
-            // PASTIKAN SEMUA OBJEK DICEK NULL SEBELUM DICLOSE!
+            // 💡 Perbaikan: Pastikan semua objek dicek null sebelum close()
             try {
                 if (stmtCustomer != null) {
                     stmtCustomer.close();
@@ -76,14 +77,14 @@ public class UserDAO {
                 }
                 if (conn != null) {
                     // Reset auto-commit ke true (praktik terbaik)
-                    conn.setAutoCommit(true); 
+                    conn.setAutoCommit(true);
                     conn.close();
                 }
             } catch (SQLException e) {
                 e.printStackTrace();
             }
         }
-        return false; // Pastikan ada return value di luar try/catch/finally
+        return success;
     }
     
     // Fungsi untuk LOGIN - Validasi username dan password
