@@ -9,39 +9,45 @@ import java.util.Properties;
 public class DBConnection {
     
     public static Connection getConnection() {
-        // Optional: Print logs for debugging (you can remove these in production)
-        System.out.println("=== CONNECTING TO DATABASE ===");
-        System.out.println("URL: " + DatabaseConfig.getDbUrl());
+        System.out.println("============================================");
+        System.out.println("🔍 DEBUGGING CONNECTION START");
+        
+        // 1. Check Raw Environment Variable
+        String rawEnv = System.getenv("DB_URL");
+        System.out.println("👉 System.getenv('DB_URL'): " + (rawEnv == null ? "NULL" : rawEnv));
+        
+        // 2. Check what DatabaseConfig returns
+        String configUrl = DatabaseConfig.getDbUrl();
+        System.out.println("👉 DatabaseConfig.getDbUrl(): " + configUrl);
         
         try {
-            // 1. Load the PostgreSQL Driver
             Class.forName("org.postgresql.Driver");
             
-            // 2. Get the Full URL (which now includes SSL settings!)
-            String url = DatabaseConfig.getDbUrl();
-            
-            // 3. Set User and Password properties
             Properties props = new Properties();
             props.setProperty("user", DatabaseConfig.getDbUser());
             props.setProperty("password", DatabaseConfig.getDbPassword());
             
-            // 4. Connect!
-            // Note: We do NOT need to manually add ssl=true here anymore 
-            // because getDbUrl() already includes "?sslmode=require..."
-            Connection conn = DriverManager.getConnection(url, props);
+            // 3. Print user (masked password)
+            System.out.println("👉 DB User: " + props.getProperty("user"));
             
-            System.out.println("✅ DATABASE CONNECTED SUCCESSFULLY");
+            System.out.println("🔄 Attempting DriverManager.getConnection...");
+            Connection conn = DriverManager.getConnection(configUrl, props);
+            
+            System.out.println("✅ SUCCESS! Connection established.");
+            System.out.println("============================================");
             return conn;
             
         } catch (ClassNotFoundException e) {
-            System.err.println("❌ PostgreSQL JDBC Driver not found!");
-            e.printStackTrace();
+            System.err.println("❌ DRIVER ERROR: " + e.getMessage());
             return null;
         } catch (SQLException e) {
-            System.err.println("❌ Database Connection failed!");
-            System.err.println("Error: " + e.getMessage());
-            e.printStackTrace();
+            System.err.println("❌ SQL ERROR: " + e.getMessage());
+            System.err.println("❌ SQL STATE: " + e.getSQLState());
             return null;
+        } catch (Exception e) {
+             System.err.println("❌ UNKNOWN ERROR: " + e.getMessage());
+             e.printStackTrace();
+             return null;
         }
     }
     
