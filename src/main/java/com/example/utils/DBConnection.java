@@ -15,13 +15,7 @@ public class DBConnection {
     public static Connection getConnection() {
         try {
             if (connection == null || connection.isClosed()) {
-                // Load MySQL JDBC Driver
-                try {
-                    Class.forName(DatabaseConfig.getDriverClassName());
-                } catch (ClassNotFoundException e) {
-                    throw new SQLException("MySQL JDBC Driver not found! Pastikan dependency ada di pom.xml.", e);
-                }
-                
+            
                 // Create connection
                 connection = DriverManager.getConnection(
                     DatabaseConfig.getDbUrl(),
