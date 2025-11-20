@@ -18,7 +18,7 @@
         <section class="discover-section auth-panel">
             <h2 class="room-page-title" data-key="register_title">Create Account</h2>
             
-            <form action="${pageContext.request.contextPath}/register" method="POST">
+            <form action="${pageContext.request.contextPath}/RegisterServlet" method="POST">
                 <div class="form-group">
                     <label for="username" data-key="register_username">Username</label>
                     <input type="text" id="username" name="username" required>
