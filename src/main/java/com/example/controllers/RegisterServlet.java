@@ -46,7 +46,7 @@ public class RegisterServlet extends HttpServlet {
         // Ambil data dari form
         String username = request.getParameter("username");
         String password = request.getParameter("password");
-        String confirmPassword = request.getParameter("confirmPassword");
+        String rePassword = request.getParameter("rePassword");
         String fullName = request.getParameter("fullName");
         String phoneNumber = request.getParameter("phoneNumber");
         String gender = request.getParameter("gender");
@@ -55,7 +55,7 @@ public class RegisterServlet extends HttpServlet {
         System.out.println("Form Data:");
         System.out.println("Username: '" + username + "'");
         System.out.println("Password: '" + password + "' (length: " + password.length() + ")");
-        System.out.println("Confirm Password: '" + confirmPassword + "' (length: " + confirmPassword.length() + ")");
+        System.out.println("rePassword: '" + rePassword + "' (length: " + rePassword.length() + ")");
         System.out.println("Full Name: '" + fullName + "'");
         System.out.println("Phone: '" + phoneNumber + "'");
         System.out.println("Gender: '" + gender + "'");
@@ -64,7 +64,7 @@ public class RegisterServlet extends HttpServlet {
         // Validasi input kosong
         if (username == null || username.trim().isEmpty() ||
             password == null || password.trim().isEmpty() ||
-            confirmPassword == null || confirmPassword.trim().isEmpty() ||
+            rePassword == null || rePassword.trim().isEmpty() ||
             fullName == null || fullName.trim().isEmpty() ||
             phoneNumber == null || phoneNumber.trim().isEmpty() ||
             gender == null || gender.trim().isEmpty() ||
@@ -93,7 +93,7 @@ public class RegisterServlet extends HttpServlet {
         }
         
         // Validasi konfirmasi password
-        if (!password.equals(confirmPassword)) {
+        if (!password.equals(rePassword)) {
             System.out.println("❌ Validation failed: Password mismatch");
             request.setAttribute("error", "Password tidak cocok!");
             forwardWithData(request, response);
