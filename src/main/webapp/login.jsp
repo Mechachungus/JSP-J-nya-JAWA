@@ -32,6 +32,7 @@
                     </div>
                 <% } %>
                 
+                
                 <% if(request.getParameter("logout") != null) { %>
                      <div style="color: blue; text-align: center; margin-bottom: 15px;">
                         Anda telah logout.
