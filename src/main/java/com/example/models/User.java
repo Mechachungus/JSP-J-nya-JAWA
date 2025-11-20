@@ -11,7 +11,8 @@ public class User {
     private String accountType;
     private String membershipID; // Tambahan baru
 
-    public User() {}
+    public User() {
+    }
 
     public User(String customerID, String accountID, String username, String fullName, 
                 String phoneNumber, String gender, String birthDate, 
