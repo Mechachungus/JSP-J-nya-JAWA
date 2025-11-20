@@ -1,42 +1,39 @@
 package com.example.config;
 
 public class DatabaseConfig {
-    // Database credentials dari freesqldatabase.com
-    private static final String DB_HOST = "db.joepctttmwjxojncyepf.supabase.co";
-    private static final String DB_PORT = "5432";
-    private static final String DB_NAME = "postgres";
-    private static final String DB_USER = "postgres";
-    private static final String DB_PASSWORD = "STEVENFEKFRENBGT";
 
-    private static final String DRIVER_CLASS_NAME = "org.postgresql.Driver";
-    
-    // JDBC URL
-    private static final String DB_URL = "jdbc:postgresql://" + DB_HOST + ":" + DB_PORT + "/" + DB_NAME;
+    // 1. CRITICAL: This method was missing! 
+    // Your DBConnection.java needs this to load the PostgreSQL driver.
+    public static String getDriverClassName() {
+        return "org.postgresql.Driver";
+    }
 
-    // Getter methods
+    // 2. Get URL
     public static String getDbUrl() {
         String url = System.getenv("DB_URL");
         if (url == null || url.isEmpty()) {
-            // Fallback for local testing if needed
-            return "jdbc:postgresql://localhost:5432/your_local_db";
+            // Fallback: Use the hardcoded Supabase URL for local testing
+            return "jdbc:postgresql://db.joepctttmwjxojncyepf.supabase.co:5432/postgres?sslmode=require";
         }
         return url;
     }
 
-    // 3. Get User from Render Environment Variable
+    // 3. Get User
     public static String getDbUser() {
         String user = System.getenv("DB_USER");
         if (user == null || user.isEmpty()) {
-            return "postgres"; // Default local user
+            // Fallback: Use the hardcoded user
+            return "postgres"; 
         }
         return user;
     }
 
-    // 4. Get Password from Render Environment Variable
+    // 4. Get Password
     public static String getDbPassword() {
         String password = System.getenv("DB_PASSWORD");
         if (password == null || password.isEmpty()) {
-            return "your_local_password"; 
+            // Fallback: Use the hardcoded password you shared
+            return "STEVENFEKFRENBGT"; 
         }
         return password;
     }
