@@ -1,27 +1,37 @@
 package com.example.controllers;
 
-import jakarta.servlet.ServletException;
-import jakarta.servlet.annotation.WebServlet;
-import jakarta.servlet.http.HttpServlet;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
-import jakarta.servlet.http.HttpSession;
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.*;
 import java.io.IOException;
 
-@WebServlet("/logout")
+@WebServlet("/LogoutServlet")
 public class LogoutServlet extends HttpServlet {
     
     @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        // 1. Fetch the session if it exists
-        HttpSession session = req.getSession(false);
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) 
+            throws ServletException, IOException {
+        processLogout(request, response);
+    }
+    
+    @Override
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) 
+            throws ServletException, IOException {
+        processLogout(request, response);
+    }
+    
+    private void processLogout(HttpServletRequest request, HttpServletResponse response) 
+            throws ServletException, IOException {
         
-        // 2. Kill the session
+        // Ambil session (jangan create new session)
+        HttpSession session = request.getSession(false);
+        
         if (session != null) {
+            // Hapus semua data di session
             session.invalidate();
         }
-
-        // 3. Go back to home page
-        resp.sendRedirect(req.getContextPath() + "/index.jsp");
+        
+        // Redirect ke login page dengan pesan logout
+        response.sendRedirect("login.jsp?logout=success");
     }
 }

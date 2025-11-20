@@ -12,6 +12,18 @@ public class DatabaseConfig {
     private static final String DB_URL = "jdbc:mysql://" + DB_HOST + ":" + DB_PORT + "/" + DB_NAME 
             + "?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true";
     
+    public static Connection getConnection() {
+        Connection conn = null;
+        try {
+            // Load driver MySQL (pastikan mysql-connector-j ada di pom.xml atau lib)
+            Class.forName("com.mysql.cj.jdbc.Driver");
+            conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASS);
+        } catch (ClassNotFoundException | SQLException e) {
+            e.printStackTrace();
+        }
+        return conn;
+    }
+
     // Getter methods
     public static String getDbUrl() {
         return DB_URL;

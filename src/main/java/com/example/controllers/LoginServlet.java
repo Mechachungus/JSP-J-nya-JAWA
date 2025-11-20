@@ -1,50 +1,80 @@
 package com.example.controllers;
 
+import com.example.dao.UserDAO;
 import com.example.models.User;
-import jakarta.servlet.ServletException;
-import jakarta.servlet.annotation.WebServlet;
-import jakarta.servlet.http.HttpServlet;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
-import jakarta.servlet.http.HttpSession;
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.*;
 import java.io.IOException;
 
-// This annotation tells the server: "When the form posts to /login, use this class"
-@WebServlet("/login") 
+@WebServlet("/LoginServlet")
 public class LoginServlet extends HttpServlet {
-
+    private UserDAO userDAO;
+    
     @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    public void init() {
+        userDAO = new UserDAO();
+    }
+    
+    @Override
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) 
+            throws ServletException, IOException {
+        // Jika user sudah login, redirect ke index
+        HttpSession session = request.getSession(false);
+        if (session != null && session.getAttribute("username") != null) {
+            response.sendRedirect("index.jsp");
+            return;
+        }
         
-        // 1. MATCH THESE STRINGS TO YOUR JSP name="" attributes
-        String usernameInput = req.getParameter("username"); 
-        String passwordInput = req.getParameter("password");
-
-        // 2. Authenticate (Simulated)
-        if (usernameInput != null && !usernameInput.isEmpty() && passwordInput.equals("123")) {
+        // Tampilkan halaman login
+        request.getRequestDispatcher("login.jsp").forward(request, response);
+    }
+    
+    @Override
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) 
+            throws ServletException, IOException {
+        
+        // Ambil data dari form
+        String username = request.getParameter("username");
+        String password = request.getParameter("password");
+        
+        // Validasi input kosong
+        if (username == null || username.trim().isEmpty() ||
+            password == null || password.trim().isEmpty()) {
             
-            // Create a dummy user object (Since we don't have a DB yet)
-            User loggedInUser = new User(
-                usernameInput, 
-                "John Doe",             // Fake Name
-                usernameInput + "@test.com", 
-                "08123456789", 
-                "Male", 
-                "1990-01-01", 
-                "customer"
-            );
-
-            // 3. CRITICAL STEP: Create the Session
-            HttpSession session = req.getSession();
-            session.setAttribute("user", loggedInUser); // This makes ${sessionScope.user} available in JSP
-
-            // 4. Redirect to the profile/history page
-            resp.sendRedirect(req.getContextPath() + "/history.jsp");
-
+            request.setAttribute("error", "Username dan Password harus diisi!");
+            request.getRequestDispatcher("login.jsp").forward(request, response);
+            return;
+        }
+        
+        // Proses login menggunakan UserDAO
+        User user = userDAO.loginUser(username, password);
+        
+        if (user != null) {
+            // Login berhasil - Simpan data user ke session
+            HttpSession session = request.getSession();
+            session.setAttribute("loggedInUser", user);
+            session.setAttribute("customerID", user.getCustomerID());
+            session.setAttribute("accountID", user.getAccountID());
+            session.setAttribute("username", user.getUsername());
+            session.setAttribute("fullName", user.getFullName());
+            session.setAttribute("accountType", user.getAccountType());
+            session.setAttribute("membershipID", user.getMembershipID());
+            
+            // Set session timeout (30 menit)
+            session.setMaxInactiveInterval(30 * 60);
+            
+            // Redirect berdasarkan tipe account
+            if ("admin".equalsIgnoreCase(user.getAccountType())) {
+                response.sendRedirect("admin/dashboard.jsp");
+            } else {
+                response.sendRedirect("index.jsp");
+            }
         } else {
-            // Login Failed
-            req.setAttribute("errorMessage", "Invalid credentials. Try 'admin' and '123'");
-            req.getRequestDispatcher("login.jsp").forward(req, resp);
+            // Login gagal - Kembali ke login dengan error message
+            request.setAttribute("error", "Username atau Password salah!");
+            request.setAttribute("username", username); // Preserve username
+            request.getRequestDispatcher("login.jsp").forward(request, response);
         }
     }
 }
