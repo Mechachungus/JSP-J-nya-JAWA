@@ -11,20 +11,21 @@ public class User {
     private String accountType;
     private String membershipID; // Tambahan baru
 
-    public User() {}
-
-    public User(String username, String fullName, String phoneNumber, String gender, String birthDate, String accountType) {
+    public User(String customerID, String accountID, String username, String fullName, 
+                String phoneNumber, String gender, String birthDate, 
+                String accountType, String membershipID) {
+        this.customerID = customerID;
+        this.accountID = accountID;
         this.username = username;
         this.fullName = fullName;
         this.phoneNumber = phoneNumber;
         this.gender = gender;
         this.birthDate = birthDate;
         this.accountType = accountType;
+        this.membershipID = membershipID;
     }
 
-    // Constructor SIMPLE (untuk register)
-    public User(String username, String fullName, String phoneNumber, 
-                String gender, String birthDate, String accountType) {
+    public User(String username, String fullName, String phoneNumber, String gender, String birthDate, String accountType) {
         this.username = username;
         this.fullName = fullName;
         this.phoneNumber = phoneNumber;
