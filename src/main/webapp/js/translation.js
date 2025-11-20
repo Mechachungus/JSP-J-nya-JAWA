@@ -141,6 +141,18 @@ const translations = {
         'footer_privacy': 'Privacy policy',
         'footer_cookie': 'Cookie policy',
         'footer_follow': 'Follow us',
+        // --- Confirmation Page ---
+        'confirm_title': 'Reservation Successful!',
+        'confirm_thank_you': 'Thank you,',
+        'confirm_thank_you_suffix': '! Your stay at East Out Hotel has been successfully booked.',
+        'confirm_booking_details': 'Your Booking Details',
+        'confirm_guest_name': 'Guest Name:',
+        'confirm_phone': 'Phone Number:',
+        'confirm_total_cost': 'Total Cost',
+        'confirm_dates': 'Dates:',
+        'confirm_payment_method': 'Payment Method:',
+        'confirm_email_note': 'A confirmation email has been sent to your registered email address. We look forward to welcoming you!',
+        'confirm_back_home': 'Back to Home',
     },
     
     // Bahasa Indonesia
@@ -281,6 +293,18 @@ const translations = {
         'footer_privacy': 'Kebijakan privasi',
         'footer_cookie': 'Kebijakan cookie',
         'footer_follow': 'Ikuti kami',
+        // --- Confirmation Page ---
+        'confirm_title': 'Reservasi Berhasil!',
+        'confirm_thank_you': 'Terima kasih,',
+        'confirm_thank_you_suffix': '! Penginapan Anda di East Out Hotel telah berhasil dipesan..',
+        'confirm_booking_details': 'Detail Pemesanan Anda',
+        'confirm_guest_name': 'Nama Tamu:',
+        'confirm_phone': 'Nomor Telepon:',
+        'confirm_total_cost': 'Total Biaya',
+        'confirm_dates': 'Tanggal:',
+        'confirm_payment_method': 'Metode Pembayaran:',
+        'confirm_email_note': 'Email konfirmasi telah dikirim ke alamat email terdaftar Anda. Kami menantikan kehadiran Anda!',
+        'confirm_back_home': 'Kembali ke Beranda',
     }
 };
 
