@@ -44,23 +44,26 @@
                             </div>
                             
                             <h3 data-key="booking_payment_details">Payment Details</h3>
-                            <div class="form-group">
-                                <label for="card-name" data-key="booking_card_name">Name on Card</label>
-                                <input type="text" id="card-name" name="card-name" required>
-                            </div>
-                            <div class="form-group">
-                                <label for="card-number" data-key="booking_card_number">Card Number</label>
-                                <input type="text" id="card-number" name="card-number" required>
-                            </div>
+
                             <div class="form-row">
                                 <div class="form-group">
-                                    <label for="card-expiry" data-key="booking_card_expiry">Expiry (MM/YY)</label>
-                                    <input type="text" id="card-expiry" name="card-expiry" placeholder="MM/YY" required>
+                                    <label for="payment-method">Payment Method</label>
+                                    <select id="payment-method" name="payment-method" class="summary-select" style="width: 100%; max-width: 100%;" required>
+                                        <option value="">-- Select payment method --</option>
+                                        <option value="credit">Credit Card</option>
+                                        <option value="debit">Debit Card</option>
+                                        <option value="bank">Bank Transfer</option>
+                                    </select>
                                 </div>
                                 <div class="form-group">
-                                    <label for="card-cvc" data-key="booking_card_cvc">CVC</label>
-                                    <input type="text" id="card-cvc" name="card-cvc" placeholder="123" required>
+                                    <label for="card-expiry" data-key="booking_card_expiry">Expiry (MM/YY)</label>
+                                    <input type="month" id="card-expiry" name="card-expiry" required>
                                 </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="card-cvc" data-key="booking_card_cvc">CVC</label>
+                                <input type="text" id="card-cvc" name="card-cvc" placeholder="123" required>
                             </div>
                             <button type="submit" class="btn btn-book btn-full-width" data-key="booking_confirm_pay">Confirm & Pay</button>
                         </form>
