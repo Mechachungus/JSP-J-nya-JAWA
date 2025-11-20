@@ -145,10 +145,10 @@ document.addEventListener("DOMContentLoaded", function() {
         const isLoggedIn = localStorage.getItem('isLoggedIn');
         if (profileIconLink) {
             if (isLoggedIn === 'true') {
-                profileIconLink.href = 'profile.html';
+                profileIconLink.href = 'profile.jsp';
                 profileIconLink.setAttribute('aria-label', 'View Profile');
             } else {
-                profileIconLink.href = 'login.html';
+                profileIconLink.href = 'login.jsp';
                 profileIconLink.setAttribute('aria-label', 'Login or Register');
             }
         }
