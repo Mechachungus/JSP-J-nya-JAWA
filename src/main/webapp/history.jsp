@@ -98,7 +98,7 @@
     
     <jsp:include page="footer.jsp" />
 
-    <script src="${pageContext.request.contextPath}/js/translations.js"></script>
+    <script src="${pageContext.request.contextPath}/js/translation.js"></script>
     <script src="${pageContext.request.contextPath}/js/script.js"></script>
     
     <script>
