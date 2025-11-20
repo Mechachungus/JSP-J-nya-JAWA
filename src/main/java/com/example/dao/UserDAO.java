@@ -11,16 +11,15 @@ public class UserDAO {
         Connection conn = null;
         PreparedStatement stmtAccount = null;
         PreparedStatement stmtCustomer = null;
-        boolean success = false;
-
+        
         try {
             conn = DBConnection.getConnection();
-            conn.setAutoCommit(false); // Mulai transaksi
-
+            conn.setAutoCommit(false); // Start transaction
+            
             // 1. Generate ID untuk Account dan Customer
             String accountID = generateAccountID(conn);
             String customerID = generateCustomerID(conn);
-
+            
             // 2. Insert ke table ACCOUNT
             String sqlAccount = "INSERT INTO account (ID, Username, Password, Type) VALUES (?, ?, ?, ?)";
             stmtAccount = conn.prepareStatement(sqlAccount);
@@ -28,9 +27,9 @@ public class UserDAO {
             stmtAccount.setString(2, user.getUsername());
             stmtAccount.setString(3, password);
             stmtAccount.setString(4, "Customer"); // Default type Customer
-
+            
             int rowsAccount = stmtAccount.executeUpdate();
-
+            
             // 3. Insert ke table CUSTOMERS
             String sqlCustomer = "INSERT INTO customers (ID, Name, Gender, Birth_Date, Phone_Number, Account_ID, Membership_ID) VALUES (?, ?, ?, ?, ?, ?, ?)";
             stmtCustomer = conn.prepareStatement(sqlCustomer);
@@ -39,47 +38,50 @@ public class UserDAO {
             stmtCustomer.setString(3, user.getGender());
             stmtCustomer.setString(4, user.getBirthDate());
             stmtCustomer.setString(5, user.getPhoneNumber());
-            stmtCustomer.setString(6, accountID); // Foreign Key ke table Account
-            stmtCustomer.setString(7, "MEM001"); // Default Membership ID
-
+            stmtCustomer.setString(6, accountID);
+            stmtCustomer.setString(7, "M1"); // Default membership Basic
+            
             int rowsCustomer = stmtCustomer.executeUpdate();
-
-            // 4. Cek apakah kedua operasi berhasil
+            
+            // 4. Commit transaction jika semua berhasil
             if (rowsAccount > 0 && rowsCustomer > 0) {
-                conn.commit(); // Commit transaksi jika kedua insert berhasil
-                success = true;
-                System.out.println("✅ Register SUCCESS for user: " + user.getUsername());
+                conn.commit();
+                System.out.println("User registered successfully!");
+                System.out.println("Account ID: " + accountID);
+                System.out.println("Customer ID: " + customerID);
+                return true;
             } else {
-                conn.rollback(); // Rollback jika ada yang gagal
-                System.err.println("❌ Register FAILED: Rows not affected.");
+                conn.rollback();
+                System.err.println("Failed to register user - rolling back");
+                return false;
             }
-
+            
         } catch (SQLException e) {
+            System.err.println("Error registering user: " + e.getMessage());
+            e.printStackTrace();
+            
+            // Rollback jika ada error
             if (conn != null) {
                 try {
-                    System.err.println("Transaction error. Initiating rollback...");
-                    conn.rollback(); 
+                    conn.rollback();
                 } catch (SQLException ex) {
                     ex.printStackTrace();
                 }
             }
-            System.err.println("❌ Error Registering User: " + e.getMessage());
-            e.printStackTrace();
-            success = false;
+            return false;
+            
         } finally {
+            // Close resources
             try {
-                if (stmtCustomer != null) stmtCustomer.close();
                 if (stmtAccount != null) stmtAccount.close();
-                if (conn != null) {
-                    conn.setAutoCommit(true); 
-                    conn.close();
-                }
+                if (stmtCustomer != null) stmtCustomer.close();
+                if (conn != null) conn.setAutoCommit(true);
             } catch (SQLException e) {
                 e.printStackTrace();
             }
         }
-        return success;
     }
+
     
     // Fungsi untuk LOGIN - Validasi username dan password
     public User loginUser(String username, String password) {
@@ -157,50 +159,65 @@ public class UserDAO {
     // Fungsi untuk GENERATE Account ID
     private String generateAccountID(Connection conn) throws SQLException {
         String sql = "SELECT ID FROM account ORDER BY ID DESC LIMIT 1";
-        Statement stmt = conn.createStatement();
-        ResultSet rs = stmt.executeQuery(sql);
+        Statement stmt = null;
+        ResultSet rs = null;
         
-        String newID = "ACC000001"; // Default ID pertama
-        
-        if (rs.next()) {
-            String lastID = rs.getString("ID");
-            // Extract angka dari ACC000001 -> 1
-            try {
+        try {
+            stmt = conn.createStatement();
+            rs = stmt.executeQuery(sql);
+            
+            String newID = "ACC000001"; // Default ID pertama
+            
+            if (rs.next()) {
+                String lastID = rs.getString("ID");
+                System.out.println("Last Account ID: " + lastID);
+                
+                // Extract angka dari ACC000001 -> 1
                 int num = Integer.parseInt(lastID.substring(3));
                 num++; // Increment
+                // Format kembali ke ACC000002
                 newID = String.format("ACC%06d", num);
-            } catch (NumberFormatException e) {
-                System.err.println("Warning: Could not parse ID " + lastID + ". Resetting to default.");
             }
+            
+            System.out.println("New Account ID: " + newID);
+            return newID;
+            
+        } finally {
+            if (rs != null) rs.close();
+            if (stmt != null) stmt.close();
         }
-        
-        rs.close();
-        stmt.close();
-        return newID;
     }
     
     // Fungsi untuk GENERATE Customer ID
-    private String generateCustomerID(Connection conn) throws SQLException {
+private String generateCustomerID(Connection conn) throws SQLException {
         String sql = "SELECT ID FROM customers ORDER BY ID DESC LIMIT 1";
-        Statement stmt = conn.createStatement();
-        ResultSet rs = stmt.executeQuery(sql);
+        Statement stmt = null;
+        ResultSet rs = null;
         
-        String newID = "CUS0001"; // Default ID pertama
-        
-        if (rs.next()) {
-            String lastID = rs.getString("ID");
-            try {
+        try {
+            stmt = conn.createStatement();
+            rs = stmt.executeQuery(sql);
+            
+            String newID = "CUS0001"; // Default ID pertama
+            
+            if (rs.next()) {
+                String lastID = rs.getString("ID");
+                System.out.println("Last Customer ID: " + lastID);
+                
+                // Extract angka dari CUS0001 -> 1
                 int num = Integer.parseInt(lastID.substring(3));
                 num++; // Increment
+                // Format kembali ke CUS0002
                 newID = String.format("CUS%04d", num);
-            } catch (NumberFormatException e) {
-                System.err.println("Warning: Could not parse ID " + lastID);
             }
+            
+            System.out.println("New Customer ID: " + newID);
+            return newID;
+            
+        } finally {
+            if (rs != null) rs.close();
+            if (stmt != null) stmt.close();
         }
-        
-        rs.close();
-        stmt.close();
-        return newID;
     }
     
     // Fungsi untuk GET user by username (untuk profile)
