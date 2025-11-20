@@ -46,7 +46,6 @@
                     <div class="grid-text">
                         <h3 data-key="dining_title">Dining</h3>
                         <p data-key="dining_desc">Savour authentic local dishes...</p>
-                        <a href="#" class="explore-link" data-key="explore_dining">Explore Dining <i class="fas fa-arrow-right"></i></a>
                     </div>
                     <div class="grid-image">
                         <img src="${pageContext.request.contextPath}/images/dining.jpg" alt="Restaurant Dining">
