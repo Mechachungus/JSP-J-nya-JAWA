@@ -10,10 +10,9 @@
     <link rel="icon" type="image/png" href="${pageContext.request.contextPath}/images/logo.png">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
-    <jsp:include page="header.jsp" />
+<body class="page-no-scroll">
 
-    <div id="the-sun"></div>
-    <div id="the-moon"></div>
+    <jsp:include page="header.jsp" />
     
     <main class="page-content">
         <section class="content-grid-section">

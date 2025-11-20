@@ -3,7 +3,9 @@ body.page-no-scroll {
     min-height: 100vh;
     transition: none;
 }
-.page-no-scroll #the-sun,
+.page-no-scroll #the-sun{
+    background:  rgba(255, 204, 0, 0) 80%;
+}
 .page-no-scroll #the-moon {
     display: none;
 }
