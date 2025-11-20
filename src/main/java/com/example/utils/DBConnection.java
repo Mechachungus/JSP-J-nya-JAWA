@@ -22,7 +22,7 @@ public class DBConnection {
         props.setProperty("user", DatabaseConfig.getDbUser());
         props.setProperty("password", DatabaseConfig.getDbPassword());
         props.setProperty("ssl", "true");
-        props.setProperty("sslmode", "verify-full");
+        props.setProperty("sslmode", "require");
         
         Connection conn = DriverManager.getConnection(
             "jdbc:postgresql://" + DatabaseConfig.getDbHost() + ":" + DatabaseConfig.getDbPort() + "/" + DatabaseConfig.getDbName(),
