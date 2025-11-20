@@ -13,6 +13,7 @@ public class DBConnection {
         System.out.println("=== CONNECTING TO DATABASE ===");
         System.out.println("URL: " + DatabaseConfig.getDbUrl());
         
+<<<<<<< HEAD
         try {
             // 1. Load the PostgreSQL Driver
             Class.forName("org.postgresql.Driver");
@@ -43,6 +44,33 @@ public class DBConnection {
             e.printStackTrace();
             return null;
         }
+=======
+        // Properties untuk SSL
+        java.util.Properties props = new java.util.Properties();
+        props.setProperty("user", DatabaseConfig.getDbUser());
+        props.setProperty("password", DatabaseConfig.getDbPassword());
+        props.setProperty("ssl", "true");
+        props.setProperty("sslmode", "require");
+        
+        Connection conn = DriverManager.getConnection(
+            "jdbc:postgresql://" + DatabaseConfig.getDbHost() + ":" + DatabaseConfig.getDbPort() + "/" + DatabaseConfig.getDbName(),
+            props
+        );
+        
+        System.out.println("✅ POSTGRESQL DATABASE WITH SSL CONNECTED SUCCESSFULLY");
+        return conn;
+        
+    } catch (ClassNotFoundException e) {
+        System.err.println("❌ PostgreSQL JDBC Driver not found!");
+        e.printStackTrace();
+        return null;
+    } catch (SQLException e) {
+        System.err.println("❌ PostgreSQL SSL Connection failed!");
+        System.err.println("Error: " + e.getMessage());
+        System.err.println("SQL State: " + e.getSQLState());
+        e.printStackTrace();
+        return null;
+>>>>>>> 503425006838dbd6fa824f0636b978faca708f06
     }
     
     public static void closeConnection(Connection conn) {
