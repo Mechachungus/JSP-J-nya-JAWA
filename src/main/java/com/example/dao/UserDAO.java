@@ -99,7 +99,7 @@ public class UserDAO {
             rs = stmt.executeQuery();
 
             if (rs.next()) {
-                // Mapping result set ke object User
+                // Gunakan constructor yang sesuai dengan class User Anda
                 User user = new User(
                     rs.getString("customerID"),
                     rs.getString("accountID"), 
@@ -117,7 +117,7 @@ public class UserDAO {
 
         } catch (SQLException e) {
             e.printStackTrace();
-            throw new RuntimeException("Database Error: " + e.getMessage(), e);
+            return null; // Jangan throw RuntimeException, return null saja
         } finally {
             // Close resources
             try { 
@@ -127,6 +127,11 @@ public class UserDAO {
             }
             try { 
                 if (stmt != null) stmt.close(); 
+            } catch (SQLException e) { 
+                e.printStackTrace(); 
+            }
+            try { 
+                if (conn != null) conn.close(); 
             } catch (SQLException e) { 
                 e.printStackTrace(); 
             }
@@ -205,25 +210,29 @@ public class UserDAO {
     
     // Fungsi untuk GET user by username (untuk profile)
     public User getUserByUsername(String username) {
-        String sql = "SELECT a.Username, a.Type, c.Name, c.Gender, c.Birth_Date, c.Phone_Number, c.Membership_ID " +
-                     "FROM account a " +
-                     "LEFT JOIN customers c ON a.ID = c.Account_ID " +
-                     "WHERE a.Username = ?";
+        String sql = "SELECT a.ID as accountID, a.Username, a.Type, " +
+                    "c.ID as customerID, c.Name, c.Gender, c.Birth_Date, c.Phone_Number, c.Membership_ID " +
+                    "FROM account a " +
+                    "LEFT JOIN customers c ON a.ID = c.Account_ID " +
+                    "WHERE a.Username = ?";
         
         try (Connection conn = DBConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            PreparedStatement stmt = conn.prepareStatement(sql)) {
             
             stmt.setString(1, username);
             ResultSet rs = stmt.executeQuery();
             
             if (rs.next()) {
                 User user = new User(
+                    rs.getString("customerID"),
+                    rs.getString("accountID"),
                     rs.getString("Username"),
                     rs.getString("Name"),
                     rs.getString("Phone_Number"),
                     rs.getString("Gender"),
                     rs.getString("Birth_Date"),
-                    rs.getString("Type")
+                    rs.getString("Type"),
+                    rs.getString("Membership_ID")
                 );
                 rs.close();
                 return user;

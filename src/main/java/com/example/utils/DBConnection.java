@@ -25,12 +25,12 @@ public class DBConnection {
                 
                 System.out.println("Database connected successfully!");
             }
-        } catch (ClassNotFoundException e) {
-            System.err.println("MySQL JDBC Driver not found!");
-            e.printStackTrace();
         } catch (SQLException e) {
             System.err.println("Database connection failed!");
             e.printStackTrace();
+            // Print detail error untuk debugging
+            System.err.println("URL: " + DatabaseConfig.getDbUrl());
+            System.err.println("User: " + DatabaseConfig.getDbUser());
         }
         
         return connection;
