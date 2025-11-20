@@ -25,7 +25,7 @@
                 <div class="booking-layout">
                     
                     <div class="booking-form">
-                        <form id="reservation-form" action="${pageContext.request.contextPath}/bookRoom" method="POST">
+                        <form id="reservation-form" action="${pageContext.request.contextPath}/bookConfirm.jsp" method="POST">
                             <h3 data-key="booking_your_details">Your Details</h3>
                             
                             <div class="form-group">
@@ -34,7 +34,10 @@
                             </div>
                             <div class="form-group">
                                 <label for="phone" data-key="booking_phone">Phone Number</label>
-                                <input type="tel" id="phone" name="phone" value="${sessionScope.user.phoneNumber}">
+                                <input type="tel" id="phone" name="phone" value="${sessionScope.user.phoneNumber}"
+                                       inputmode="numeric" pattern="[0-9]*" maxlength="15"
+                                       oninput="this.value = this.value.replace(/\\D/g, '')"
+                                       title="Please enter numbers only">
                             </div>
                             
                             <h3 data-key="booking_select_dates">Select Dates</h3>
@@ -50,21 +53,17 @@
                                     <label for="payment-method">Payment Method</label>
                                     <select id="payment-method" name="payment-method" class="summary-select" style="width: 100%; max-width: 100%;" required>
                                         <option value="">-- Select payment method --</option>
-                                        <option value="credit">Credit Card</option>
-                                        <option value="debit">Debit Card</option>
-                                        <option value="bank">Bank Transfer</option>
+                                        <option value="Credit Card">Credit Card</option>
+                                        <option value="Debit Card">Debit Card</option>
+                                        <option value="Bank Transfer">Bank Transfer</option>
                                     </select>
-                                </div>
-                                <div class="form-group">
-                                    <label for="card-expiry" data-key="booking_card_expiry">Expiry (MM/YY)</label>
-                                    <input type="month" id="card-expiry" name="card-expiry" required>
                                 </div>
                             </div>
 
-                            <div class="form-group">
-                                <label for="card-cvc" data-key="booking_card_cvc">CVC</label>
-                                <input type="text" id="card-cvc" name="card-cvc" placeholder="123" required>
-                            </div>
+                            <!-- Hidden fields to submit room type and calculated total to confirmation page -->
+                            <input type="hidden" id="hidden-room-type" name="room-type" value="">
+                            <input type="hidden" id="total-cost" name="total-cost" value="">
+
                             <button type="submit" class="btn btn-book btn-full-width" data-key="booking_confirm_pay">Confirm & Pay</button>
                         </form>
                     </div>
@@ -114,6 +113,9 @@
         const priceElement = document.getElementById('selected-room-price');
         const totalElement = document.getElementById('selected-room-total');
         const datePickerInput = document.getElementById('date-picker'); 
+        const hiddenRoomInput = document.getElementById('hidden-room-type');
+        const hiddenTotalInput = document.getElementById('total-cost');
+        const reservationForm = document.getElementById('reservation-form');
         
         let picker = null; 
         let numberOfNights = 0; 
@@ -134,9 +136,12 @@
                 if (numberOfNights > 0) {
                     const totalPrice = room.price * numberOfNights;
                     totalElement.textContent = formatRupiah(totalPrice);
+                    if (hiddenTotalInput) hiddenTotalInput.value = formatRupiah(totalPrice);
                 } else {
                     totalElement.textContent = '-';
+                    if (hiddenTotalInput) hiddenTotalInput.value = '';
                 }
+                if (hiddenRoomInput) hiddenRoomInput.value = roomType || '';
             } else {
                 priceElement.textContent = '-';
                 totalElement.textContent = '-';
@@ -212,6 +217,18 @@
             calculateAndUpdateDisplay();
             initializeLitepicker(currentRoomType);
         });
+
+        // Ensure hidden inputs are set before submitting the form
+        if (reservationForm) {
+            reservationForm.addEventListener('submit', function(e) {
+                // Sync values one last time
+                if (hiddenRoomInput) hiddenRoomInput.value = currentRoomType || roomSelect.value || '';
+                // If total not calculated yet, try to calculate
+                if (hiddenTotalInput && (!hiddenTotalInput.value || hiddenTotalInput.value === '')) {
+                    calculateAndUpdateDisplay();
+                }
+            });
+        }
 
         const params = new URLSearchParams(window.location.search);
         const urlRoom = params.get('room');
