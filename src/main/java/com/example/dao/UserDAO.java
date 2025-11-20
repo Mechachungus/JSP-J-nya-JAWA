@@ -75,41 +75,92 @@ public class UserDAO {
     
     // Fungsi untuk LOGIN - Ambil data user berdasarkan username dan password
     public User loginUser(String username, String password) {
-        User user = null;
-        String sql = "SELECT a.ID AS Account_ID, c.ID AS Customer_ID, a.Username, c.Name, c.Phone_Number, c.Gender, c.Birth_Date, a.Type AS Account_Type, c.Membership_ID " +
-                     "FROM account a " +
-                     "JOIN customers c ON a.ID = c.Account_ID " +
-                     "WHERE a.Username = ? AND a.Password = ?";
+        System.out.println("=== DEBUG LOGIN ===");
+        System.out.println("Username: '" + username + "'");
+        System.out.println("Password: '" + password + "'");
+        System.out.println("Password length: " + password.length());
         
-        try (Connection conn = DBConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
+        String sql = "SELECT a.ID as accountID, a.Username, a.Type, " +
+                    "c.ID as customerID, c.Name, c.Gender, c.Birth_Date, c.Phone_Number, c.Membership_ID " +
+                    "FROM account a " +
+                    "LEFT JOIN customers c ON a.ID = c.Account_ID " +
+                    "WHERE a.Username = ? AND a.Password = ?";
+        
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rs = null;
+
+        try {
+            conn = DBConnection.getConnection();
             
+            if (conn == null) {
+                System.err.println("DATABASE CONNECTION IS NULL!");
+                return null;
+            }
+            
+            System.out.println("Database connected successfully");
+            
+            stmt = conn.prepareStatement(sql);
             stmt.setString(1, username);
             stmt.setString(2, password);
             
-            try (ResultSet rs = stmt.executeQuery()) {
-                if (rs.next()) {
-                    // Buat object User dari hasil query
-                    user = new User(
-                        rs.getString("Customer_ID"),
-                        rs.getString("Account_ID"),
-                        rs.getString("Username"),
-                        rs.getString("Name"),
-                        rs.getString("Phone_Number"),
-                        rs.getString("Gender"),
-                        rs.getString("Birth_Date"),
-                        rs.getString("Account_Type"),
-                        rs.getString("Membership_ID")
-                    );
-                }
-            }
+            System.out.println("Executing query: " + sql);
             
+            rs = stmt.executeQuery();
+
+            if (rs.next()) {
+                System.out.println("LOGIN SUCCESS - User found in database");
+                User user = new User(
+                    rs.getString("customerID"),
+                    rs.getString("accountID"), 
+                    rs.getString("Username"),
+                    rs.getString("Name"),
+                    rs.getString("Phone_Number"),
+                    rs.getString("Gender"),
+                    rs.getString("Birth_Date"),
+                    rs.getString("Type"),
+                    rs.getString("Membership_ID")
+                );
+                System.out.println("User details: " + user.getUsername() + ", " + user.getFullName());
+                return user;
+            } else {
+                System.out.println("LOGIN FAILED - No user found with these credentials");
+                // Debug: cek apakah username ada
+                checkUsernameExists(username, conn);
+            }
+            return null;
+
         } catch (SQLException e) {
-            System.err.println("Error during user login: " + e.getMessage());
+            System.err.println("SQL Error: " + e.getMessage());
             e.printStackTrace();
+            return null;
+        } finally {
+            try { if (rs != null) rs.close(); } catch (Exception e) { }
+            try { if (stmt != null) stmt.close(); } catch (Exception e) { }
+            try { if (conn != null) conn.close(); } catch (Exception e) { }
         }
-        return user;
     }
+
+// Method helper untuk debug
+private void checkUsernameExists(String username, Connection conn) {
+    try {
+        String checkSql = "SELECT Username FROM account WHERE Username = ?";
+        PreparedStatement checkStmt = conn.prepareStatement(checkSql);
+        checkStmt.setString(1, username);
+        ResultSet checkRs = checkStmt.executeQuery();
+        
+        if (checkRs.next()) {
+            System.out.println("DEBUG: Username '" + username + "' EXISTS in database");
+            System.out.println("Stored username: '" + checkRs.getString("Username") + "'");
+        } else {
+            System.out.println("DEBUG: Username '" + username + "' NOT FOUND in database");
+        }
+        checkRs.close();
+        checkStmt.close();
+    } catch (SQLException e) {
+        System.err.println("Debug check failed: " + e.getMessage());
+    }
+}
     
     // Fungsi untuk mendapatkan ID Account tertinggi dan men-generate ID baru (ACCxxxxxx)
     private String generateAccountID(Connection conn) throws SQLException {

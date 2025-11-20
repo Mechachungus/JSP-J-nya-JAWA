@@ -1,14 +1,19 @@
 package com.example.config;
 
 public class DatabaseConfig {
-    
-    // 1. CRITICAL: Change this to the PostgreSQL driver
-    // If this still says "com.mysql.cj.jdbc.Driver", it will fail!
-    public static String getDriverClassName() {
-        return "org.postgresql.Driver";
-    }
+    // Database credentials dari freesqldatabase.com
+    private static final String DB_HOST = "db.joepctttmwjxojncyepf.supabase.co";
+    private static final String DB_PORT = "5432";
+    private static final String DB_NAME = "postgres";
+    private static final String DB_USER = "postgres";
+    private static final String DB_PASSWORD = "STEVENFEKFRENBGT";
 
-    // 2. Get URL from Render Environment Variable
+    private static final String DRIVER_CLASS_NAME = "org.postgresql.Driver";
+    
+    // JDBC URL
+    private static final String DB_URL = "jdbc:postgresql://" + DB_HOST + ":" + DB_PORT + "/" + DB_NAME;
+
+    // Getter methods
     public static String getDbUrl() {
         String url = System.getenv("DB_URL");
         if (url == null || url.isEmpty()) {
