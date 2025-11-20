@@ -87,63 +87,50 @@ public class UserDAO {
     }
     
     // Fungsi untuk LOGIN - Validasi username dan password
-    public User loginUser(String username, String password) {
-        String sql = "SELECT a.ID as accountID, a.Username, a.Type, " +
-                    "c.ID as customerID, c.Name, c.Gender, c.Birth_Date, c.Phone_Number, c.Membership_ID " +
-                    "FROM account a " +
-                    "LEFT JOIN customers c ON a.ID = c.Account_ID " +
-                    "WHERE a.Username = ? AND a.Password = ?";
-        
-        Connection conn = null;
-        PreparedStatement stmt = null;
-        ResultSet rs = null;
+public User loginUser(String username, String password) {
+        // Query SQL yang menggabungkan Account, Customers, dan Membership
+        String sql = "SELECT "
+                   + "a.ID AS accountID, "
+                   + "c.ID AS customerID, "
+                   + "a.Username, "
+                   + "c.Name AS FullName, "
+                   + "a.Type AS accountType, "
+                   + "m.ID AS membershipID "
+                   + "FROM account a "
+                   + "INNER JOIN customers c ON a.ID = c.Account_ID "
+                   + "INNER JOIN membership m ON c.Membership_ID = m.ID "
+                   + "WHERE a.Username = ? AND a.Password = ?";
 
-        try {
-            conn = DBConnection.getConnection();
-            stmt = conn.prepareStatement(sql);
+        // 💡 Menggunakan try-with-resources untuk menutup conn dan stmt secara otomatis
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            // Set parameter untuk query
             stmt.setString(1, username);
             stmt.setString(2, password);
-            
-            rs = stmt.executeQuery();
 
-            if (rs.next()) {
-                // Gunakan constructor yang sesuai dengan class User Anda
-                User user = new User(
-                    rs.getString("customerID"),
-                    rs.getString("accountID"), 
-                    rs.getString("Username"),
-                    rs.getString("Name"),
-                    rs.getString("Phone_Number"),
-                    rs.getString("Gender"),
-                    rs.getString("Birth_Date"),
-                    rs.getString("Type"),
-                    rs.getString("Membership_ID")
-                );
-                return user;
+            // 💡 Menggunakan try-with-resources untuk menutup rs secara otomatis
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    // Login berhasil: Buat objek User dan isi data
+                    User user = new User();
+                    user.setAccountID(rs.getString("accountID"));
+                    user.setCustomerID(rs.getString("customerID"));
+                    user.setUsername(rs.getString("Username"));
+                    user.setFullName(rs.getString("FullName"));
+                    user.setAccountType(rs.getString("accountType"));
+                    user.setMembershipID(rs.getString("membershipID"));
+
+                    return user; // Login sukses
+                }
             }
-            return null;
-
         } catch (SQLException e) {
+            // Tangani error database (koneksi, query, dll.)
+            System.err.println("Error saat menjalankan login: " + e.getMessage());
             e.printStackTrace();
-            return null; // Jangan throw RuntimeException, return null saja
-        } finally {
-            // Close resources
-            try { 
-                if (rs != null) rs.close(); 
-            } catch (SQLException e) { 
-                e.printStackTrace(); 
-            }
-            try { 
-                if (stmt != null) stmt.close(); 
-            } catch (SQLException e) { 
-                e.printStackTrace(); 
-            }
-            try { 
-                if (conn != null) conn.close(); 
-            } catch (SQLException e) { 
-                e.printStackTrace(); 
-            }
         }
+        
+        return null; // Login gagal (kredensial salah atau terjadi error)
     }
         
     // Fungsi untuk CEK username sudah ada atau belum
