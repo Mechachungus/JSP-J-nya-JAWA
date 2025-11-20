@@ -53,29 +53,37 @@ public class UserDAO {
             }
             
         } catch (SQLException e) {
-            System.err.println("Error registering user: " + e.getMessage());
-            e.printStackTrace();
-            
-            // Rollback jika ada error
+            // Perlu diperhatikan: Saat terjadi SQLException, disarankan untuk melakukan rollback
+            // sebelum mencetak stack trace.
             if (conn != null) {
                 try {
-                    conn.rollback();
+                    System.err.println("Transaction is being rolled back...");
+                    conn.rollback(); // Lakukan rollback
                 } catch (SQLException ex) {
                     ex.printStackTrace();
                 }
             }
+            e.printStackTrace();
             return false;
-            
         } finally {
-            // Close resources
+            // PASTIKAN SEMUA OBJEK DICEK NULL SEBELUM DICLOSE!
             try {
-                if (stmtAccount != null) stmtAccount.close();
-                if (stmtCustomer != null) stmtCustomer.close();
-                if (conn != null) conn.setAutoCommit(true);
+                if (stmtCustomer != null) {
+                    stmtCustomer.close();
+                }
+                if (stmtAccount != null) {
+                    stmtAccount.close();
+                }
+                if (conn != null) {
+                    // Reset auto-commit ke true (praktik terbaik)
+                    conn.setAutoCommit(true); 
+                    conn.close();
+                }
             } catch (SQLException e) {
                 e.printStackTrace();
             }
         }
+        return false; // Pastikan ada return value di luar try/catch/finally
     }
     
     // Fungsi untuk LOGIN - Validasi username dan password
