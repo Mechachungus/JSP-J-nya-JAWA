@@ -4,7 +4,7 @@ import com.example.models.User;
 import com.example.utils.DBConnection;
 import java.sql.*;
 
-public class UserDao {
+public class UserDAO {
     
     // Fungsi untuk REGISTER - Insert user baru (Account + Customer)
     public boolean registerUser(User user, String password) {

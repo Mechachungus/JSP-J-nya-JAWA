@@ -1,6 +1,6 @@
 package com.example.controllers;
 
-import com.example.dao.UserDao;
+import com.example.dao.UserDAO;
 import com.example.models.User;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
