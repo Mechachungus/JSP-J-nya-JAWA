@@ -12,8 +12,9 @@ public class DatabaseConfig {
     
     // JDBC URL
     private static final String DB_URL = "jdbc:postgresql://" + DB_HOST + ":" + DB_PORT + "/" + DB_NAME 
-            + "?user=" + DB_USER + "&password=" + DB_PASSWORD
-            + "&sslmode=require";
+            + "?sslmode=verify-full"
+            + "&ssl=true"
+            + "&sslfactory=org.postgresql.ssl.DefaultSSLFactory";
 
     // Getter methods
     public static String getDbUrl() {
@@ -26,6 +27,16 @@ public class DatabaseConfig {
     
     public static String getDbPassword() {
         return DB_PASSWORD;
+    }
+    
+    public static String getDbHost() { 
+        return DB_HOST; 
+    }
+    public static String getDbPort() { 
+        return DB_PORT; 
+    }
+    public static String getDbName() { 
+        return DB_NAME; 
     }
     
     // Driver class name
