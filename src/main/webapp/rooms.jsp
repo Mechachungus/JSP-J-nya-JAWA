@@ -13,6 +13,9 @@
 <body class="page-no-scroll">
 
     <jsp:include page="header.jsp" />
+
+    <div id="the-sun"></div>
+    <div id="the-moon"></div>
     
     <main class="page-content">
         <section class="content-grid-section">
