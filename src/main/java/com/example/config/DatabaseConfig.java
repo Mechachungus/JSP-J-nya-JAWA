@@ -17,7 +17,7 @@ public class DatabaseConfig {
         try {
             // Load driver MySQL (pastikan mysql-connector-j ada di pom.xml atau lib)
             Class.forName("com.mysql.cj.jdbc.Driver");
-            conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASS);
+            conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
         } catch (ClassNotFoundException | SQLException e) {
             e.printStackTrace();
         }
