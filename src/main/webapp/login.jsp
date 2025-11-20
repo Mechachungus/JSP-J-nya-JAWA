@@ -18,26 +18,43 @@
         <section class="discover-section auth-panel">
             <h2 class="room-page-title" data-key="login_title">Login</h2>
             
-            <form action="${pageContext.request.contextPath}/login" method="POST">
+            <form action="${pageContext.request.contextPath}/LoginServlet" method="POST">
                 
-                <% if(request.getAttribute("errorMessage") != null) { %>
-                    <p style="color: red; text-align: center;"><%= request.getAttribute("errorMessage") %></p>
+                <% if(request.getAttribute("error") != null) { %>
+                    <div class="alert alert-danger" style="color: red; text-align: center; margin-bottom: 15px;">
+                        <%= request.getAttribute("error") %>
+                    </div>
+                <% } %>
+                
+                <% if(request.getParameter("success") != null && request.getParameter("success").equals("registered")) { %>
+                     <div style="color: green; text-align: center; margin-bottom: 15px;">
+                        Registrasi berhasil! Silakan login.
+                    </div>
+                <% } %>
+                
+                <% if(request.getParameter("logout") != null) { %>
+                     <div style="color: blue; text-align: center; margin-bottom: 15px;">
+                        Anda telah logout.
+                    </div>
                 <% } %>
 
                 <div class="form-group">
                     <label for="username" data-key="login_username">Username (or Email)</label>
-                    <input type="text" id="username" name="username" required>
+                    <input type="text" id="username" name="username" 
+                           value="<%= request.getAttribute("username") != null ? request.getAttribute("username") : "" %>" required>
                 </div>
+                
                 <div class="form-group">
                     <label for="password" data-key="login_password">Password</label>
                     <input type="password" id="password" name="password" required>
                 </div>
+                
                 <button type="submit" class="btn btn-book btn-full-width" data-key="login_title">Login</button>
             </form>
 
             <p class="auth-switch">
                 <span data-key="login_no_account">Don't have an account?</span> 
-                <a href="${pageContext.request.contextPath}/register.jsp" data-key="login_register_here">Register here</a>
+                <a href="${pageContext.request.contextPath}/RegisterServlet" data-key="login_register_here">Register here</a>
             </p>
         </section>
     </main>
